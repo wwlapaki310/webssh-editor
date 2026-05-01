@@ -3,6 +3,13 @@
 > Browser-based SSH editor with minimal server footprint.  
 > VSCode-like experience — no server-side agent required.
 
+## 🔗 Live Demo (Prototype UI)
+
+**[https://wwlapaki310.github.io/webssh-editor](https://wwlapaki310.github.io/webssh-editor)**
+
+> Current prototype is a UI mockup. Connection dialog and IDE layout are interactive,  
+> but actual SSH/SFTP functionality requires the bridge binary (in development).
+
 ---
 
 ## Overview / 概要
@@ -154,6 +161,16 @@ There is already an OSS project called [`webssh`](https://github.com/huashengdun
 It provides a browser terminal over SSH — useful, but purely a terminal.
 
 **WebSSH Editor** adds the GUI editor layer: file tree, Monaco editing, LSP completion, multi-tab workflow. The word "Editor" in the name is the key differentiator.
+
+---
+
+## GitHub Pages Setup
+
+To enable the live demo, go to **Settings → Pages** and set:
+- Source: `Deploy from a branch`
+- Branch: `main` / `/ (root)`
+
+The `.nojekyll` file is already included so GitHub Pages serves `index.html` correctly.
 
 ---
 
