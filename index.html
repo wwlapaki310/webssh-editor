@@ -6,163 +6,15 @@
 <title>WebSSH Editor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg0:#0d1117;--bg1:#161b22;--bg2:#21262d;
-  --bd:#30363d;--bd2:#21262d;
-  --t0:#e6edf3;--t1:#8b949e;--t2:#3d444d;
-  --ac:#1D9E75;--ac-bg:#0f4c35;--ac-t:#9fe1cb;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans',sans-serif;overflow:hidden}
-.screen{display:none}
-.screen.active{display:flex;flex-direction:column;height:100vh}
-/* connect */
-.connect-screen{align-items:center;justify-content:center;padding:24px}
-.connect-logo{text-align:center;margin-bottom:24px}
-.logo-main{font-size:24px;font-weight:500;letter-spacing:-.5px}
-.logo-main span{color:var(--ac)}
-.logo-sub{font-size:12px;color:var(--t1);margin-top:5px;font-family:'JetBrains Mono',monospace}
-.dialog{background:var(--bg1);border:1px solid var(--bd);border-radius:10px;width:100%;max-width:560px;overflow:hidden;animation:fadeUp .2s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.dialog-hdr{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--bd2)}
-.hdr-icon{width:22px;height:22px;background:var(--ac-bg);border:1px solid var(--ac);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.dialog-hdr-title{font-size:13px;font-weight:500}
-.dialog-body{display:flex}
-.saved-pane{width:156px;flex-shrink:0;background:var(--bg0);border-right:1px solid var(--bd2);padding:10px 0}
-.pane-label{font-size:10px;color:var(--t1);letter-spacing:.8px;text-transform:uppercase;padding:0 12px 8px}
-.saved-item{padding:7px 12px;cursor:pointer;border-left:2px solid transparent;transition:background .1s}
-.saved-item:hover{background:var(--bg1)}
-.saved-item.sel{background:#1c2d3a;border-left-color:var(--ac)}
-.saved-name{font-size:12px;color:var(--t0);font-family:'JetBrains Mono',monospace}
-.saved-host{font-size:11px;color:var(--t1);font-family:'JetBrains Mono',monospace;margin-top:1px}
-.pane-add{display:flex;align-items:center;gap:6px;padding:8px 12px;margin-top:4px;border-top:1px solid var(--bd2);cursor:pointer;font-size:12px;color:var(--t1);transition:color .1s}
-.pane-add:hover{color:var(--ac)}
-.form-pane{flex:1;padding:18px}
-.field{margin-bottom:13px}
-.field-2{display:grid;grid-template-columns:1fr 76px;gap:10px;margin-bottom:13px}
-.lbl{font-size:11px;color:var(--t1);display:block;margin-bottom:5px}
-.inp{width:100%;background:var(--bg0);border:1px solid var(--bd);border-radius:5px;color:var(--t0);font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 10px;outline:none;transition:border-color .15s}
-.inp:focus{border-color:var(--ac)}
-.inp::placeholder{color:var(--t2)}
-.auth-seg{display:flex;border:1px solid var(--bd);border-radius:5px;overflow:hidden;margin-bottom:13px}
-.auth-opt{flex:1;background:none;border:none;border-right:1px solid var(--bd);color:var(--t1);font-size:12px;font-family:'DM Sans',sans-serif;padding:7px 6px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
-.auth-opt:last-child{border-right:none}
-.auth-opt:hover:not(.on){background:var(--bg2);color:var(--t0)}
-.auth-opt.on{background:#1c2d3a;color:var(--ac)}
-.auth-pane{display:none}
-.auth-pane.on{display:block}
-.pw-wrap{position:relative}
-.pw-eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t1);font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;padding:2px 5px}
-.pw-eye:hover{color:var(--t0)}
-.key-ta{width:100%;background:var(--bg0);border:1px solid var(--bd);border-radius:5px;color:var(--t0);font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 10px;outline:none;resize:none;height:70px;line-height:1.5;transition:border-color .15s}
-.key-ta:focus{border-color:var(--ac)}
-.key-ta::placeholder{color:var(--t2)}
-.key-hint{font-size:11px;color:var(--t1);margin-top:5px}
-.key-hint a{color:var(--ac);cursor:pointer}
-.agent-note{background:var(--ac-bg);border:1px solid var(--ac);border-radius:5px;padding:10px 12px;font-size:12px;color:var(--ac-t);display:flex;align-items:center;gap:8px}
-.dialog-ftr{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid var(--bd2);background:var(--bg0)}
-.save-lbl{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--t1);cursor:pointer}
-.save-lbl input{accent-color:var(--ac);width:13px;height:13px;cursor:pointer}
-.ftr-btns{display:flex;gap:8px}
-.btn-cancel{background:none;border:1px solid var(--bd);color:var(--t1);border-radius:5px;padding:7px 14px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
-.btn-cancel:hover{border-color:var(--t1);color:var(--t0)}
-.btn-connect{background:var(--ac);border:none;color:#04342C;border-radius:5px;padding:7px 18px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;min-width:110px;justify-content:center}
-.btn-connect:hover:not(:disabled){background:#0F6E56;color:var(--t0)}
-.btn-connect:disabled{opacity:.7;cursor:default}
-/* ide */
-.topbar{display:flex;align-items:center;gap:12px;padding:0 14px;height:38px;background:var(--bg1);border-bottom:1px solid var(--bd2);flex-shrink:0}
-.topbar-logo{font-size:13px;font-weight:500}
-.topbar-logo span{color:var(--ac)}
-.conn-chip{display:flex;align-items:center;gap:5px;background:var(--ac-bg);border:1px solid var(--ac);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--ac);font-family:'JetBrains Mono',monospace}
-.chip-dot{width:6px;height:6px;border-radius:50%;background:var(--ac)}
-.tb-sp{flex:1}
-.tb-btn{background:none;border:none;color:var(--t1);font-size:12px;font-family:'DM Sans',sans-serif;padding:4px 10px;border-radius:4px;cursor:pointer;transition:all .1s}
-.tb-btn:hover{background:var(--bg2);color:var(--t0)}
-.ide-main{display:flex;flex:1;overflow:hidden}
-.sidebar{width:200px;flex-shrink:0;background:var(--bg1);border-right:1px solid var(--bd2);overflow-y:auto;padding:8px 0}
-.sb-sec{font-size:10px;color:var(--t1);letter-spacing:.8px;text-transform:uppercase;padding:4px 12px 6px}
-.tree-node{display:flex;align-items:center;gap:5px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--t1);font-family:'JetBrains Mono',monospace;white-space:nowrap;user-select:none;transition:background .1s}
-.tree-node:hover{background:var(--bg2);color:var(--t0)}
-.tree-node.active{background:#1c2d3a;color:#58a6ff}
-.tree-arrow{font-size:10px;width:10px;flex-shrink:0;color:var(--t2)}
-.tree-ch{display:none}
-.tree-ch.open{display:block}
-.editor-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.tabs-bar{display:flex;align-items:center;background:var(--bg1);border-bottom:1px solid var(--bd2);overflow-x:auto;flex-shrink:0;min-height:34px}
-.tabs-bar::-webkit-scrollbar{height:2px}
-.tabs-bar::-webkit-scrollbar-thumb{background:var(--bd)}
-.tab{display:flex;align-items:center;gap:6px;padding:0 14px;height:34px;font-size:12px;cursor:pointer;color:var(--t1);border-right:1px solid var(--bd2);white-space:nowrap;flex-shrink:0;font-family:'JetBrains Mono',monospace;transition:color .1s}
-.tab:hover{color:var(--t0)}
-.tab.active{background:var(--bg0);color:var(--t0);border-top:1px solid var(--ac)}
-.tab .dot{width:8px;height:8px;border-radius:50%;background:var(--ac);display:none;flex-shrink:0}
-.tab.modified .dot{display:inline-block}
-.tab .x{font-size:14px;color:transparent;width:16px;text-align:center;transition:color .1s}
-.tab:hover .x,.tab.active .x{color:var(--t2)}
-.tab .x:hover{color:var(--t0)!important}
-/* editor: gutter + code area */
-.editor-wrap{flex:1;display:flex;overflow:hidden;background:var(--bg0);cursor:text}
-.gutter{width:48px;flex-shrink:0;overflow:hidden;background:var(--bg0);padding-top:0}
-.gutter-nums{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.65;color:var(--t2);text-align:right;padding:14px 12px 14px 0;white-space:pre;pointer-events:none;transition:color .1s}
-.editor-wrap:focus-within .gutter-nums{color:var(--t1)}
-.code-scroll{flex:1;position:relative;overflow:auto}
-.code-scroll::-webkit-scrollbar{width:8px;height:8px}
-.code-scroll::-webkit-scrollbar-thumb{background:var(--bg2);border-radius:4px}
-.hl-pre{position:relative;padding:14px 24px 14px 16px;margin:0;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre;pointer-events:none;color:var(--t0);word-break:normal;min-height:100%}
-.editor-ta{position:absolute;top:0;left:0;width:100%;height:100%;padding:14px 24px 14px 16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;background:transparent;color:transparent;caret-color:#c9d1d9;border:none;outline:none;resize:none;tab-size:4;white-space:pre;overflow:hidden;spellcheck:false}
-.editor-ta::selection{background:rgba(56,139,253,.25)}
-/* terminal */
-.term-pane{height:170px;flex-shrink:0;background:var(--bg0);border-top:1px solid var(--bd2);display:flex;flex-direction:column}
-.term-tabs{display:flex;align-items:center;background:var(--bg1);border-bottom:1px solid var(--bd2);padding:0 12px;height:30px;gap:10px}
-.term-tab{font-size:11px;color:var(--t1);cursor:pointer;padding:2px 8px;border-radius:3px}
-.term-tab.active{color:var(--t0);background:var(--bg2)}
-.term-host{margin-left:auto;font-size:11px;color:var(--t1);font-family:'JetBrains Mono',monospace}
-.term-body{flex:1;overflow-y:auto;padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.6;cursor:text}
-.term-body::-webkit-scrollbar{width:4px}
-.term-body::-webkit-scrollbar-thumb{background:var(--bg2)}
-.t-line{color:var(--t0);white-space:pre-wrap;word-break:break-all}
-.t-prompt{color:var(--ac)}
-.t-dim{color:var(--t1)}
-.t-err{color:#ff7b72}
-.t-input-row{display:flex;align-items:center}
-.t-input{background:none;border:none;outline:none;color:var(--t0);font-family:'JetBrains Mono',monospace;font-size:12px;flex:1;caret-color:var(--ac)}
-/* statusbar */
-.statusbar{display:flex;align-items:center;height:22px;flex-shrink:0;background:#0a3d26;font-size:11px;font-family:'JetBrains Mono',monospace}
-.sb-item{padding:0 10px;height:100%;display:flex;align-items:center;gap:4px;color:var(--ac-t);border-right:1px solid rgba(29,158,117,.3)}
-.sb-item.accent{background:var(--ac);color:#04342C;font-weight:500}
-.sb-r{margin-left:auto;display:flex}
-.sb-saved{color:var(--ac);opacity:0;transition:opacity .3s}
-.sb-saved.show{opacity:1}
-/* settings modal */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal{background:var(--bg1);border:1px solid var(--bd);border-radius:10px;width:340px;overflow:hidden;animation:fadeUp .15s ease}
-.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--bd2)}
-.modal-hdr span{font-size:13px;font-weight:500}
-.modal-x{background:none;border:none;color:var(--t1);cursor:pointer;font-size:18px;line-height:1;padding:0 4px}
-.modal-x:hover{color:var(--t0)}
-.modal-body{padding:18px}
-.set-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.set-label{font-size:13px;color:var(--t0)}
-.seg{display:flex;border:1px solid var(--bd);border-radius:5px;overflow:hidden}
-.seg-b{background:none;border:none;border-right:1px solid var(--bd);color:var(--t1);font-size:12px;font-family:'DM Sans',sans-serif;padding:5px 11px;cursor:pointer;transition:all .1s}
-.seg-b:last-child{border-right:none}
-.seg-b:hover:not(.on){background:var(--bg2);color:var(--t0)}
-.seg-b.on{background:#1c2d3a;color:var(--ac)}
-.modal-hr{border:none;border-top:1px solid var(--bd2);margin:14px 0}
-.modal-about{font-size:12px;color:var(--t1);line-height:1.7}
-.modal-about a{color:var(--ac);text-decoration:none}
-.modal-about a:hover{text-decoration:underline}
-@keyframes spin{to{transform:rotate(360deg)}}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- CONNECT -->
+<!-- ============ CONNECT SCREEN ============ -->
 <div id="screen-connect" class="screen connect-screen active">
   <div class="connect-logo">
     <div class="logo-main">WebSSH <span>Editor</span></div>
-    <div class="logo-sub">browser-based &nbsp;·&nbsp; zero server install &nbsp;·&nbsp; SFTP sync</div>
+    <div class="logo-sub">browser-based &nbsp;&middot;&nbsp; zero server install &nbsp;&middot;&nbsp; SFTP sync</div>
   </div>
   <div class="dialog">
     <div class="dialog-hdr">
@@ -190,9 +42,15 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
           <button class="auth-opt on" id="opt-pw" onclick="setAuth('pw')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2" y="5" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M4 5V3.5a2 2 0 014 0V5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> Password</button>
           <button class="auth-opt" id="opt-agent" onclick="setAuth('agent')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.1"/><path d="M1.5 11c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> Agent</button>
         </div>
-        <div id="pane-pw" class="auth-pane on"><div class="field"><label class="lbl">Password</label><div class="pw-wrap"><input id="f-pw" class="inp" type="password" placeholder="••••••••" style="padding-right:52px"><button class="pw-eye" onclick="togglePw()">show</button></div></div></div>
-        <div id="pane-key" class="auth-pane"><div class="field"><label class="lbl">Private key</label><textarea class="key-ta" placeholder="Paste private key (-----BEGIN OPENSSH PRIVATE KEY-----)&#10;or browse for a file below"></textarea><div class="key-hint" style="margin-top:5px"><a>Browse key file</a> &nbsp;·&nbsp; Passphrase: <input type="password" class="inp" placeholder="optional" style="display:inline;width:110px;padding:2px 8px;font-size:11px;height:26px"></div></div></div>
-        <div id="pane-agent" class="auth-pane"><div class="agent-note"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#1D9E75" stroke-width="1.1"/><path d="M7 4.5v3l1.5 1.5" stroke="#1D9E75" stroke-width="1.1" stroke-linecap="round"/></svg> SSH Agent detected — using forwarded keys</div></div>
+        <div id="pane-pw" class="auth-pane on">
+          <div class="field"><label class="lbl">Password</label><div class="pw-wrap"><input id="f-pw" class="inp" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" style="padding-right:52px"><button class="pw-eye" onclick="togglePw()">show</button></div></div>
+        </div>
+        <div id="pane-key" class="auth-pane">
+          <div class="field"><label class="lbl">Private key</label><textarea class="key-ta" placeholder="Paste private key (-----BEGIN OPENSSH PRIVATE KEY-----)&#10;or browse for a file below"></textarea><div class="key-hint" style="margin-top:5px"><a>Browse key file</a> &nbsp;&middot;&nbsp; Passphrase: <input type="password" class="inp" placeholder="optional" style="display:inline;width:110px;padding:2px 8px;font-size:11px;height:26px"></div></div>
+        </div>
+        <div id="pane-agent" class="auth-pane">
+          <div class="agent-note"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#1D9E75" stroke-width="1.1"/><path d="M7 4.5v3l1.5 1.5" stroke="#1D9E75" stroke-width="1.1" stroke-linecap="round"/></svg> SSH Agent detected &mdash; using forwarded keys</div>
+        </div>
       </div>
     </div>
     <div class="dialog-ftr">
@@ -205,7 +63,7 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
   </div>
 </div>
 
-<!-- IDE -->
+<!-- ============ IDE SCREEN ============ -->
 <div id="screen-ide" class="screen">
   <div class="topbar">
     <div class="topbar-logo">WebSSH <span>Editor</span></div>
@@ -217,29 +75,28 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
   <div class="ide-main">
     <div class="sidebar">
       <div class="sb-sec">Explorer</div>
-      <div class="tree-node" data-dir="project" onclick="toggleDir(this)"><span class="tree-arrow" style="color:var(--t1)">▾</span><span style="font-size:13px">📁</span> ~/project</div>
+      <div class="tree-node" data-dir="project" onclick="toggleDir(this)"><span class="tree-arrow" style="color:var(--t1)">&#9662;</span><span style="font-size:13px">&#128193;</span> ~/project</div>
       <div class="tree-ch open" id="dir-project">
-        <div class="tree-node" data-dir="src" style="padding-left:22px" onclick="toggleDir(this)"><span class="tree-arrow" style="color:var(--t1)">▾</span><span style="font-size:13px">📁</span> src</div>
+        <div class="tree-node" data-dir="src" style="padding-left:22px" onclick="toggleDir(this)"><span class="tree-arrow" style="color:var(--t1)">&#9662;</span><span style="font-size:13px">&#128193;</span> src</div>
         <div class="tree-ch open" id="dir-src">
-          <div class="tree-node active" data-file="main.py" style="padding-left:34px" onclick="openFile('main.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">⬡</span> main.py</div>
-          <div class="tree-node" data-file="model.py" style="padding-left:34px" onclick="openFile('model.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">⬡</span> model.py</div>
-          <div class="tree-node" data-file="config.py" style="padding-left:34px" onclick="openFile('config.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">⬡</span> config.py</div>
+          <div class="tree-node active" data-file="main.py" style="padding-left:34px" onclick="openFile('main.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">&#11041;</span> main.py</div>
+          <div class="tree-node" data-file="model.py" style="padding-left:34px" onclick="openFile('model.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">&#11041;</span> model.py</div>
+          <div class="tree-node" data-file="config.py" style="padding-left:34px" onclick="openFile('config.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">&#11041;</span> config.py</div>
         </div>
-        <div class="tree-node" data-dir="tests" style="padding-left:22px" onclick="toggleDir(this)"><span class="tree-arrow" style="color:var(--t2)">▸</span><span style="font-size:13px">📁</span> tests</div>
+        <div class="tree-node" data-dir="tests" style="padding-left:22px" onclick="toggleDir(this)"><span class="tree-arrow" style="color:var(--t2)">&#9658;</span><span style="font-size:13px">&#128193;</span> tests</div>
         <div class="tree-ch" id="dir-tests">
-          <div class="tree-node" data-file="test_model.py" style="padding-left:34px" onclick="openFile('test_model.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">⬡</span> test_model.py</div>
+          <div class="tree-node" data-file="test_model.py" style="padding-left:34px" onclick="openFile('test_model.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">&#11041;</span> test_model.py</div>
         </div>
-        <div class="tree-node" data-file="requirements.txt" style="padding-left:22px" onclick="openFile('requirements.txt',this)"><span style="width:10px;display:inline-block"></span><span style="color:#8b949e;font-size:13px">≡</span> requirements.txt</div>
-        <div class="tree-node" data-file="README.md" style="padding-left:22px" onclick="openFile('README.md',this)"><span style="width:10px;display:inline-block"></span><span style="color:#e3b341;font-size:13px">⬡</span> README.md</div>
+        <div class="tree-node" data-file="requirements.txt" style="padding-left:22px" onclick="openFile('requirements.txt',this)"><span style="width:10px;display:inline-block"></span><span style="color:#8b949e;font-size:13px">&equiv;</span> requirements.txt</div>
+        <div class="tree-node" data-file="README.md" style="padding-left:22px" onclick="openFile('README.md',this)"><span style="width:10px;display:inline-block"></span><span style="color:#e3b341;font-size:13px">&#11041;</span> README.md</div>
       </div>
     </div>
     <div class="editor-area">
       <div class="tabs-bar" id="tabs-bar">
         <div class="tab active" data-file="main.py" onclick="switchTab('main.py')">
-          <span class="dot"></span><span class="tab-name">main.py</span><span class="x" onclick="closeTab(event,'main.py')">×</span>
+          <span class="dot"></span><span class="tab-name">main.py</span><span class="x" onclick="closeTab(event,'main.py')">&times;</span>
         </div>
       </div>
-      <!-- always-editable editor: gutter + hl-pre + transparent textarea -->
       <div class="editor-wrap" onclick="focusEditor()">
         <div class="gutter"><div class="gutter-nums" id="gutter-nums">1</div></div>
         <div class="code-scroll" id="code-scroll">
@@ -264,27 +121,27 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
           <div class="t-line"><span class="t-prompt">username@example-server:~/project$</span> <span class="t-dim">python src/main.py --device imx500</span></div>
           <div class="t-line" style="color:#8b949e">[INFO] Loading model: mobilenet_v2_imx500.rpk</div>
           <div class="t-line" style="color:#8b949e">[INFO] Device: /dev/video0</div>
-          <div class="t-line" style="color:#1D9E75">[INFO] Inference running — 28.4 fps</div>
+          <div class="t-line" style="color:#1D9E75">[INFO] Inference running &mdash; 28.4 fps</div>
           <div class="t-input-row" id="t-input-row"><span class="t-prompt" id="t-prompt-span">username@example-server:~/project$</span>&nbsp;<input class="t-input" id="t-input" autocomplete="off" spellcheck="false" onkeydown="termKey(event)"></div>
         </div>
       </div>
     </div>
   </div>
   <div class="statusbar">
-    <div class="sb-item accent">⎇ main</div>
+    <div class="sb-item accent">&#9095; main</div>
     <div class="sb-item">SSH Connected</div>
     <div class="sb-r">
-      <div class="sb-item"><span class="sb-saved" id="sb-saved">Saved ✓</span></div>
+      <div class="sb-item"><span class="sb-saved" id="sb-saved">Saved &#10003;</span></div>
       <div class="sb-item" id="sb-cur">Ln 1, Col 1</div>
-      <div class="sb-item">SFTP ✓</div>
+      <div class="sb-item">SFTP &#10003;</div>
     </div>
   </div>
 </div>
 
-<!-- SETTINGS -->
+<!-- ============ SETTINGS MODAL ============ -->
 <div class="modal-overlay" id="settings-modal" onclick="closeSettingsOutside(event)">
   <div class="modal">
-    <div class="modal-hdr"><span>Settings</span><button class="modal-x" onclick="closeSettings()">×</button></div>
+    <div class="modal-hdr"><span>Settings</span><button class="modal-x" onclick="closeSettings()">&times;</button></div>
     <div class="modal-body">
       <div class="set-row">
         <div class="set-label">Font size</div>
@@ -300,413 +157,13 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" id="toggle-ln" checked onchange="toggleLineNumbers(this.checked)" style="accent-color:var(--ac);width:13px;height:13px;cursor:pointer"> Show</label>
       </div>
       <hr class="modal-hr">
-      <div class="modal-about">WebSSH Editor — prototype<br>Browser-based SSH editor · zero server footprint<br><a href="https://github.com/wwlapaki310/webssh-editor" target="_blank">github.com/wwlapaki310/webssh-editor</a></div>
+      <div class="modal-about">WebSSH Editor &mdash; prototype<br>Browser-based SSH editor &middot; zero server footprint<br><a href="https://github.com/wwlapaki310/webssh-editor" target="_blank">github.com/wwlapaki310/webssh-editor</a></div>
     </div>
   </div>
 </div>
 
-<script>
-const FILES={
-'main.py':`#!/usr/bin/env python3
-"""
-IMX500 Edge Inference
-Entry point for real-time object detection on Raspberry Pi.
-"""
-import argparse
-import cv2
-import numpy as np
-from picamera2 import Picamera2
-from src.model import IMX500Model
-from src.config import Config
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='IMX500 inference')
-    parser.add_argument('--device', default='imx500')
-    parser.add_argument('--threshold', type=float, default=0.5)
-    return parser.parse_args()
-
-
-def main():
-    args = parse_args()
-    cfg = Config(threshold=args.threshold)
-    model = IMX500Model(cfg.model_path)
-    cam = Picamera2()
-    cam.start()
-
-    while True:
-        frame = cam.capture_array()
-        detections = model.infer(frame)
-        for det in detections:
-            cv2.rectangle(frame, det.bbox, (0, 255, 0), 2)
-        if cv2.waitKey(1) == ord('q'):
-            break
-    cam.stop()
-
-
-if __name__ == '__main__':
-    main()
-`,
-'model.py':`"""IMX500Model — wraps Sony IMX500 NPU inference."""
-import numpy as np
-from dataclasses import dataclass
-from typing import List
-
-
-@dataclass
-class Detection:
-    label: str
-    score: float
-    bbox: tuple
-
-
-class IMX500Model:
-    def __init__(self, model_path: str):
-        self.model_path = model_path
-        self.labels = self._load_labels()
-        self._load()
-
-    def _load(self):
-        # Load .rpk model onto the IMX500 NPU
-        print(f'[INFO] Loading: {self.model_path}')
-
-    def _load_labels(self) -> List[str]:
-        return ['person', 'bicycle', 'car', 'cat', 'dog']
-
-    def infer(self, frame: np.ndarray) -> List[Detection]:
-        tensor = self.preprocess(frame)
-        return self.postprocess(self._run_npu(tensor))
-
-    def preprocess(self, frame):
-        import cv2
-        return cv2.resize(frame, (224, 224)) / 255.0
-
-    def _run_npu(self, tensor): pass
-
-    def postprocess(self, raw) -> List[Detection]:
-        return []
-`,
-'config.py':`"""Configuration for IMX500 inference pipeline."""
-from dataclasses import dataclass
-
-
-@dataclass
-class Config:
-    model_path: str = 'models/mobilenet_v2_imx500.rpk'
-    device: str = '/dev/video0'
-    threshold: float = 0.5
-    max_fps: int = 30
-    input_size: tuple = (224, 224)
-`,
-'test_model.py':`"""Unit tests for IMX500Model."""
-import pytest
-import numpy as np
-from src.model import IMX500Model
-from src.config import Config
-
-
-@pytest.fixture
-def model():
-    return IMX500Model(Config().model_path)
-
-
-def test_model_loads(model):
-    assert model is not None
-
-
-def test_preprocess_shape(model):
-    frame = np.zeros((480, 640, 3), dtype=np.uint8)
-    tensor = model.preprocess(frame)
-    assert tensor.shape == (224, 224, 3)
-`,
-'requirements.txt':`picamera2>=0.3.12
-opencv-python-headless>=4.8.0
-numpy>=1.24.0
-pytest>=7.4.0
-`,
-'README.md':`# IMX500 Edge Inference
-
-Real-time object detection on Raspberry Pi using Sony IMX500.
-
-## Setup
-
-    pip install -r requirements.txt
-
-## Usage
-
-    python src/main.py --device imx500 --threshold 0.5
-`
-};
-
-// saved versions (tracks what's been Ctrl+S'd)
-const savedFiles={};
-Object.keys(FILES).forEach(k=>savedFiles[k]=FILES[k]);
-
-// ---- syntax highlighting ----
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function findComment(line){let q=false,ch='';for(let i=0;i<line.length;i++){const c=line[i];if(!q&&(c=='"'||c=="'")){q=true;ch=c;}else if(q&&c==ch&&line[i-1]!='\\'){q=false;}else if(!q&&c=='#')return i;}return -1;}
-function hlCode(s){
-  const KW=/\b(import|from|def|class|if|elif|else|return|while|for|in|as|with|try|except|pass|True|False|None|and|or|not|is|lambda|raise|yield|break|continue|global|del|assert|async|await)\b/g;
-  const BI=/\b(print|len|range|str|int|float|list|dict|set|tuple|bool|type|isinstance|open|zip|sorted|enumerate|sum|min|max|abs|round|super|staticmethod|classmethod)\b/g;
-  s=s.replace(/("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,'<span style="color:#a5d6ff">$1</span>');
-  s=s.replace(/(@\w+)/g,'<span style="color:#ffa657">$1</span>');
-  s=s.replace(KW,'<span style="color:#ff7b72">$1</span>');
-  s=s.replace(BI,'<span style="color:#79c0ff">$1</span>');
-  s=s.replace(/\b(\d+\.?\d*)\b/g,'<span style="color:#79c0ff">$1</span>');
-  return s;
-}
-function hlPython(code){
-  return code.split('\n').map(line=>{
-    const ci=findComment(line);
-    const cp=ci>=0?line.slice(0,ci):line,cm=ci>=0?line.slice(ci):'';
-    return hlCode(esc(cp))+(cm?`<span style="color:#8b949e;font-style:italic">${esc(cm)}</span>`:'');
-  }).join('\n');
-}
-function highlight(name,content){
-  if(name.endsWith('.py'))return hlPython(content);
-  return esc(content);
-}
-
-// ---- state ----
-let currentFile='main.py';
-let openTabs=['main.py'];
-let termCwd='~/project';
-let connUser='username';
-let showLn=true;
-let fontSize=12.5;
-let savedTimeout=null;
-
-// ---- editor core ----
-function loadFile(name){
-  const ta=document.getElementById('editor-ta');
-  const content=FILES[name]||'';
-  ta.value=content;
-  updateHl(name,content);
-  updateGutter(content);
-  resizeTa();
-  updateCursor();
-}
-
-function updateHl(name,content){
-  document.getElementById('hl-pre').innerHTML=highlight(name,content);
-}
-
-function updateGutter(content){
-  if(!showLn){document.getElementById('gutter-nums').textContent='';return;}
-  const lines=content.split('\n').length;
-  document.getElementById('gutter-nums').textContent=Array.from({length:lines},(_,i)=>i+1).join('\n');
-}
-
-function resizeTa(){
-  const ta=document.getElementById('editor-ta');
-  const pre=document.getElementById('hl-pre');
-  // match textarea height to pre so parent scrolls correctly
-  ta.style.height=Math.max(pre.scrollHeight,document.getElementById('code-scroll').clientHeight)+'px';
-}
-
-function syncGutter(){
-  // sync gutter scroll with code-scroll
-  const cs=document.getElementById('code-scroll');
-  document.getElementById('gutter-nums').style.marginTop=(-cs.scrollTop+14)+'px';
-  document.getElementById('gutter-nums').style.paddingTop='0';
-}
-
-function onEditorInput(){
-  const ta=document.getElementById('editor-ta');
-  const content=ta.value;
-  FILES[currentFile]=content;
-  updateHl(currentFile,content);
-  updateGutter(content);
-  resizeTa();
-  updateCursor();
-  // modified dot
-  const modified=content!==savedFiles[currentFile];
-  const tab=document.querySelector(`.tab[data-file="${currentFile}"]`);
-  if(tab)tab.classList.toggle('modified',modified);
-}
-
-function updateCursor(){
-  const ta=document.getElementById('editor-ta');
-  const text=ta.value.substring(0,ta.selectionStart);
-  const lines=text.split('\n');
-  document.getElementById('sb-cur').textContent=`Ln ${lines.length}, Col ${lines[lines.length-1].length+1}`;
-}
-
-function focusEditor(){
-  document.getElementById('editor-ta').focus();
-}
-
-function onEditorKeyDown(ev){
-  if(ev.key==='s'&&(ev.ctrlKey||ev.metaKey)){
-    ev.preventDefault();
-    saveCurrentFile();
-    return;
-  }
-  if(ev.key==='Tab'){
-    ev.preventDefault();
-    const ta=ev.target,s=ta.selectionStart,e=ta.selectionEnd;
-    ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(e);
-    ta.selectionStart=ta.selectionEnd=s+4;
-    onEditorInput();
-  }
-}
-
-function saveCurrentFile(){
-  const content=FILES[currentFile];
-  savedFiles[currentFile]=content;
-  const tab=document.querySelector(`.tab[data-file="${currentFile}"]`);
-  if(tab)tab.classList.remove('modified');
-  // flash "Saved"
-  const sb=document.getElementById('sb-saved');
-  sb.classList.add('show');
-  clearTimeout(savedTimeout);
-  savedTimeout=setTimeout(()=>sb.classList.remove('show'),1800);
-}
-
-// ---- connect ----
-document.querySelectorAll('.saved-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.saved-item').forEach(i=>i.classList.remove('sel'));
-    item.classList.add('sel');
-    document.getElementById('f-host').value=item.dataset.host||'';
-    document.getElementById('f-user').value=item.dataset.user||'';
-    document.getElementById('f-port').value=item.dataset.port||'22';
-  });
-});
-function setAuth(t){['key','pw','agent'].forEach(x=>{document.getElementById('opt-'+x).classList.toggle('on',x===t);document.getElementById('pane-'+x).classList.toggle('on',x===t);});}
-function togglePw(){const f=document.getElementById('f-pw'),b=document.querySelector('.pw-eye');f.type=f.type==='password'?'text':'password';b.textContent=f.type==='password'?'show':'hide';}
-
-function doConnect(){
-  const btn=document.getElementById('btn-connect');
-  const host=document.getElementById('f-host').value||'your-server.example.com';
-  const user=document.getElementById('f-user').value||'username';
-  const port=document.getElementById('f-port').value||'22';
-  connUser=user;
-  btn.disabled=true;
-  btn.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.2" stroke-dasharray="8 6" style="animation:spin .8s linear infinite;transform-origin:6.5px 6.5px"/></svg> Connecting…';
-  setTimeout(()=>{
-    btn.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5l3 3 5-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> Connected!';
-    setTimeout(()=>{
-      document.getElementById('screen-connect').classList.remove('active');
-      document.getElementById('screen-ide').classList.add('active');
-      document.getElementById('conn-label').textContent=`${user}@${host}:${port}`;
-      const sh=host.replace(/\..+/,'')||'example-server';
-      document.getElementById('t-prompt-span').textContent=`${user}@${sh}:${termCwd}$ `;
-      document.getElementById('term-host').textContent=`${user}@${sh}`;
-      loadFile(currentFile);
-      setTimeout(()=>document.getElementById('editor-ta').focus(),100);
-      btn.disabled=false;
-      btn.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 3l3.5 3.5L7.5 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> Connect';
-    },400);
-  },1200);
-}
-
-function goDialog(){document.getElementById('screen-ide').classList.remove('active');document.getElementById('screen-connect').classList.add('active');}
-function toggleDir(el){const a=el.querySelector('.tree-arrow'),o=a.textContent.includes('▾');a.textContent=o?'▸':'▾';a.style.color=o?'var(--t2)':'var(--t1)';const ch=document.getElementById('dir-'+el.dataset.dir);if(ch)ch.classList.toggle('open',!o);}
-
-function openFile(name,el){
-  document.querySelectorAll('.tree-node[data-file]').forEach(n=>n.classList.remove('active'));
-  if(el)el.classList.add('active');
-  if(!openTabs.includes(name)){
-    openTabs.push(name);
-    const t=document.createElement('div');
-    t.className='tab';t.dataset.file=name;
-    t.innerHTML=`<span class="dot"></span><span class="tab-name">${name}</span><span class="x" onclick="closeTab(event,'${name}')">×</span>`;
-    t.onclick=()=>switchTab(name);
-    document.getElementById('tabs-bar').appendChild(t);
-  }
-  switchTab(name);
-}
-
-function switchTab(name){
-  currentFile=name;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.file===name));
-  document.querySelectorAll('.tree-node[data-file]').forEach(n=>n.classList.toggle('active',n.dataset.file===name));
-  loadFile(name);
-  document.getElementById('editor-ta').focus();
-}
-
-function closeTab(ev,name){
-  ev.stopPropagation();
-  openTabs=openTabs.filter(t=>t!==name);
-  const t=document.querySelector(`.tab[data-file="${name}"]`);
-  if(t)t.remove();
-  if(currentFile===name){
-    if(openTabs.length>0)switchTab(openTabs[openTabs.length-1]);
-    else{document.getElementById('hl-pre').innerHTML='';document.getElementById('editor-ta').value='';}
-  }
-}
-
-// ---- settings ----
-function openSettings(){document.getElementById('settings-modal').classList.add('open');}
-function closeSettings(){document.getElementById('settings-modal').classList.remove('open');}
-function closeSettingsOutside(ev){if(ev.target===document.getElementById('settings-modal'))closeSettings();}
-function setFontSize(size){
-  fontSize=size;
-  document.querySelectorAll('.seg-b').forEach(b=>b.classList.toggle('on',+b.dataset.size===size));
-  const px=size+'px';
-  document.getElementById('hl-pre').style.fontSize=px;
-  document.getElementById('editor-ta').style.fontSize=px;
-  document.getElementById('gutter-nums').style.fontSize=(size-0.5)+'px';
-  resizeTa();
-}
-function toggleLineNumbers(show){
-  showLn=show;
-  document.getElementById('gutter-nums').style.visibility=show?'visible':'hidden';
-  updateGutter(FILES[currentFile]||'');
-}
-
-// ---- terminal ----
-function esc2(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-const TERM_RESP={
-  'ls':'config.py  main.py  model.py  requirements.txt  README.md  tests/',
-  'ls -la':`total 28\ndrwxr-xr-x 4 user user 4096 May  1 12:00 .\n-rw-r--r-- 1 user user  842 May  1 12:00 README.md\ndrwxr-xr-x 2 user user 4096 May  1 12:00 src\ndrwxr-xr-x 2 user user 4096 May  1 12:00 tests`,
-  'pwd':'/home/user/project','whoami':'user',
-  'uname -a':'Linux example-server 6.1.0 #1 SMP aarch64 GNU/Linux',
-  'free -h':'               total   used   free\nMem:           3.7Gi  612Mi  2.8Gi',
-  'df -h':'/dev/root  29G  8.2G  19G  30% /',
-  'git status':'On branch main\nnothing to commit, working tree clean',
-  'git log --oneline -5':'a1b2c3d feat: add config\ne4f5a6b feat: implement model\n7c8d9e0 init: project structure',
-};
-function termKey(ev){
-  if(ev.key!=='Enter')return;
-  const input=document.getElementById('t-input');
-  const cmd=input.value.trim();input.value='';
-  const body=document.getElementById('term-body'),row=document.getElementById('t-input-row');
-  const pt=document.getElementById('t-prompt-span').textContent;
-  const cmdEl=document.createElement('div');cmdEl.className='t-line';
-  cmdEl.innerHTML=`<span class="t-prompt">${pt}</span> ${esc2(cmd)}`;
-  body.insertBefore(cmdEl,row);
-  if(!cmd){body.scrollTop=body.scrollHeight;return;}
-  if(cmd==='clear'){Array.from(body.children).forEach(c=>{if(c!==row)c.remove();});return;}
-  const res=document.createElement('div');res.className='t-line';
-  if(cmd.startsWith('python')&&cmd.includes('main.py')){
-    res.innerHTML='<span style="color:#8b949e">[INFO] Loading model: mobilenet_v2_imx500.rpk</span>\n<span style="color:#8b949e">[INFO] Device: /dev/video0</span>\n<span style="color:#1D9E75">[INFO] Inference running — 28.4 fps</span>\n<span style="color:#8b949e">^C</span>';
-    res.style.whiteSpace='pre';
-  }else if(cmd==='exit'||cmd==='logout'){
-    res.innerHTML='<span class="t-dim">Connection closed.</span>';
-  }else if(TERM_RESP[cmd]){
-    res.textContent=TERM_RESP[cmd];res.style.whiteSpace='pre';
-  }else if(cmd.startsWith('cd ')){
-    const d=cmd.slice(3);termCwd=d.startsWith('~')?d:termCwd+'/'+d;
-    const sh=document.getElementById('term-host').textContent.replace(/^.*@/,'');
-    document.getElementById('t-prompt-span').textContent=`${connUser}@${sh}:${termCwd}$ `;
-    body.scrollTop=body.scrollHeight;return;
-  }else if(cmd.startsWith('cat ')){
-    const f=cmd.slice(4);
-    if(FILES[f]){res.textContent=FILES[f];res.style.whiteSpace='pre';}
-    else res.innerHTML=`<span class="t-err">cat: ${esc2(f)}: No such file or directory</span>`;
-  }else{
-    res.innerHTML=`<span class="t-err">bash: ${esc2(cmd)}: command not found</span>`;
-  }
-  body.insertBefore(res,row);body.scrollTop=body.scrollHeight;
-}
-
-// ---- init ----
-// pre-load so it renders correctly when IDE opens
-document.getElementById('editor-ta').value=FILES['main.py'];
-updateHl('main.py',FILES['main.py']);
-updateGutter(FILES['main.py']);
-</script>
+<script src="js/data.js"></script>
+<script src="js/highlight.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
