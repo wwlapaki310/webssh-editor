@@ -8,7 +8,7 @@
 **[https://wwlapaki310.github.io/webssh-editor](https://wwlapaki310.github.io/webssh-editor)**
 
 > Current prototype is a UI mockup. Connection dialog and IDE layout are interactive,  
-> but actual SSH/SFTP functionality requires the bridge binary (in development).
+> but actual SSH/SFTP functionality requires the Chrome extension (in development).
 
 ---
 
@@ -21,7 +21,7 @@ VSCode Remote SSH is powerful, but it installs a heavyweight server process (`vs
 - All editor intelligence (Monaco, LSP) runs in the **browser**
 - The remote side needs **only `sshd`** — nothing installed, nothing running
 - File access is handled via **SFTP** (standard SSH subsystem)
-- A small local bridge binary manages the WebSocket ↔ SSH translation
+- A Chrome extension provides raw TCP access to SSH — no separate binary, no server setup
 
 ### Target Users
 
@@ -53,21 +53,39 @@ For a Raspberry Pi 3B or a small cloud VM, this is often unusable.
 ```
 [WebSSH Editor — Proposed]
 
-Browser                         Remote Server
-┌─────────────────────────┐     ┌─────────────┐
-│  Monaco Editor           │     │             │
-│  LSP (WASM / Worker)     │     │  sshd only  │
-│  xterm.js (terminal)     │◀──▶│  (SFTP sub- │
-│  File cache (IndexedDB)  │ WS  │   system)   │
-└────────────┬────────────┘     └─────────────┘
-             │ localhost
-     ┌───────┴────────┐
-     │  Bridge Binary  │  ← single Go binary
-     │  (WS ↔ SSH)    │    no install on remote
-     └────────────────┘
+Browser (GitHub Pages)
+┌──────────────────────────────────────┐
+│  Monaco Editor                        │
+│  LSP (WASM / Worker)                  │
+│  xterm.js (terminal)                  │
+│  File cache (IndexedDB)               │
+│                                       │
+│  chrome.runtime.connect()             │
+└───────────────┬──────────────────────┘
+                │
+   ┌────────────▼─────────────┐
+   │  Chrome Extension         │  ← installed once from Chrome Web Store
+   │  background service worker│    no binary, no server
+   │  chrome.sockets.tcp       │
+   └────────────┬─────────────┘
+                │ TCP:22 (SSH/SFTP)
+   ┌────────────▼─────────────┐
+   │  Any device on LAN        │  ← sshd only, zero install
+   │  (Raspberry Pi, VPS, ...) │
+   └──────────────────────────┘
 
 RAM on remote: ~5 MB (sshd only)   CPU: near zero
 ```
+
+### Why Chrome Extension?
+
+Browsers cannot make raw TCP connections (security model). The only way to reach SSH port 22 from a browser without installing anything on the remote device is to use the `chrome.sockets.tcp` API, which is only available to Chrome extensions.
+
+| Approach | PC install | Remote install | Works from GitHub Pages |
+|---|---|---|---|
+| Go bridge binary | exe required | nothing | ✅ |
+| **Chrome extension** | **extension only** | **nothing** | **✅** |
+| WebSSH (Python) | nothing | Python + webssh | ✅ |
 
 ---
 
@@ -96,9 +114,9 @@ webssh-editor/
 The project has three major phases. Each phase builds on the previous one and can be shipped independently.
 
 ```
-Phase ①  Editor UI        ██████████░░  in progress
-Phase ②  Bridge Binary    ░░░░░░░░░░░░  not started
-Phase ③  LSP in WASM      ░░░░░░░░░░░░  not started
+Phase ①  Editor UI          ██████████░░  in progress
+Phase ②  Chrome Extension   ░░░░░░░░░░░░  not started
+Phase ③  LSP in WASM        ░░░░░░░░░░░░  not started
 ```
 
 ---

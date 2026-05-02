@@ -6,6 +6,7 @@
 <title>WebSSH Editor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -46,7 +47,14 @@
           <div class="field"><label class="lbl">Password</label><div class="pw-wrap"><input id="f-pw" class="inp" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" style="padding-right:52px"><button class="pw-eye" onclick="togglePw()">show</button></div></div>
         </div>
         <div id="pane-key" class="auth-pane">
-          <div class="field"><label class="lbl">Private key</label><textarea class="key-ta" placeholder="Paste private key (-----BEGIN OPENSSH PRIVATE KEY-----)&#10;or browse for a file below"></textarea><div class="key-hint" style="margin-top:5px"><a>Browse key file</a> &nbsp;&middot;&nbsp; Passphrase: <input type="password" class="inp" placeholder="optional" style="display:inline;width:110px;padding:2px 8px;font-size:11px;height:26px"></div></div>
+          <div class="field">
+            <label class="lbl">Private key</label>
+            <textarea class="key-ta" id="key-ta" placeholder="Paste private key (-----BEGIN OPENSSH PRIVATE KEY-----)&#10;or browse for a file below"></textarea>
+            <div class="key-hint" style="margin-top:5px">
+              <a onclick="document.getElementById('key-file-input').click()" style="cursor:pointer">Browse key file</a>
+              <input type="file" id="key-file-input" style="display:none" onchange="loadKeyFile(event)">
+            </div>
+          </div>
         </div>
         <div id="pane-agent" class="auth-pane">
           <div class="agent-note"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#1D9E75" stroke-width="1.1"/><path d="M7 4.5v3l1.5 1.5" stroke="#1D9E75" stroke-width="1.1" stroke-linecap="round"/></svg> SSH Agent detected &mdash; using forwarded keys</div>
@@ -60,6 +68,7 @@
         <button class="btn-connect" id="btn-connect" onclick="doConnect()"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 3l3.5 3.5L7.5 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> Connect</button>
       </div>
     </div>
+    <div id="conn-error" class="conn-error" style="display:none"></div>
   </div>
 </div>
 
@@ -75,30 +84,12 @@
   <div class="ide-main">
     <div class="sidebar">
       <div class="sb-sec">Explorer</div>
-      <div class="tree-node" data-dir="project" onclick="toggleDir(this)"><span class="tree-arrow" style="color:var(--t1)">&#9662;</span><span style="font-size:13px">&#128193;</span> ~/project</div>
-      <div class="tree-ch open" id="dir-project">
-        <div class="tree-node" data-dir="src" style="padding-left:22px" onclick="toggleDir(this)"><span class="tree-arrow" style="color:var(--t1)">&#9662;</span><span style="font-size:13px">&#128193;</span> src</div>
-        <div class="tree-ch open" id="dir-src">
-          <div class="tree-node active" data-file="main.py" style="padding-left:34px" onclick="openFile('main.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">&#11041;</span> main.py</div>
-          <div class="tree-node" data-file="model.py" style="padding-left:34px" onclick="openFile('model.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">&#11041;</span> model.py</div>
-          <div class="tree-node" data-file="config.py" style="padding-left:34px" onclick="openFile('config.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">&#11041;</span> config.py</div>
-        </div>
-        <div class="tree-node" data-dir="tests" style="padding-left:22px" onclick="toggleDir(this)"><span class="tree-arrow" style="color:var(--t2)">&#9658;</span><span style="font-size:13px">&#128193;</span> tests</div>
-        <div class="tree-ch" id="dir-tests">
-          <div class="tree-node" data-file="test_model.py" style="padding-left:34px" onclick="openFile('test_model.py',this)"><span style="width:10px;display:inline-block"></span><span style="color:#3572A5;font-size:13px">&#11041;</span> test_model.py</div>
-        </div>
-        <div class="tree-node" data-file="requirements.txt" style="padding-left:22px" onclick="openFile('requirements.txt',this)"><span style="width:10px;display:inline-block"></span><span style="color:#8b949e;font-size:13px">&equiv;</span> requirements.txt</div>
-        <div class="tree-node" data-file="README.md" style="padding-left:22px" onclick="openFile('README.md',this)"><span style="width:10px;display:inline-block"></span><span style="color:#e3b341;font-size:13px">&#11041;</span> README.md</div>
-      </div>
+      <!-- file tree rendered dynamically by app.js -->
     </div>
     <div class="editor-area">
-      <div class="tabs-bar" id="tabs-bar">
-        <div class="tab active" data-file="main.py" onclick="switchTab('main.py')">
-          <span class="dot"></span><span class="tab-name">main.py</span><span class="x" onclick="closeTab(event,'main.py')">&times;</span>
-        </div>
-      </div>
+      <div class="tabs-bar" id="tabs-bar"></div>
       <div class="editor-wrap" onclick="focusEditor()">
-        <div class="gutter"><div class="gutter-nums" id="gutter-nums">1</div></div>
+        <div class="gutter"><div class="gutter-nums" id="gutter-nums"></div></div>
         <div class="code-scroll" id="code-scroll">
           <pre class="hl-pre" id="hl-pre"></pre>
           <textarea class="editor-ta" id="editor-ta" spellcheck="false"
@@ -117,15 +108,15 @@
           <div class="term-tab">Problems</div>
           <div class="term-host" id="term-host">-</div>
         </div>
-        <div class="term-body" id="term-body" onclick="document.getElementById('t-input').focus()">
-          <div class="t-input-row" id="t-input-row"><span class="t-prompt" id="t-prompt-span">$</span>&nbsp;<input class="t-input" id="t-input" autocomplete="off" spellcheck="false" onkeydown="termKey(event)"></div>
+        <div class="term-body" id="term-body">
+          <div id="xterm-container"></div>
         </div>
       </div>
     </div>
   </div>
   <div class="statusbar">
     <div class="sb-item accent">&#9095; main</div>
-    <div class="sb-item">SSH Connected</div>
+    <div class="sb-item" id="sb-ssh">SSH Connected</div>
     <div class="sb-r">
       <div class="sb-item"><span class="sb-saved" id="sb-saved">Saved &#10003;</span></div>
       <div class="sb-item" id="sb-cur">Ln 1, Col 1</div>
@@ -153,12 +144,13 @@
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" id="toggle-ln" checked onchange="toggleLineNumbers(this.checked)" style="accent-color:var(--ac);width:13px;height:13px;cursor:pointer"> Show</label>
       </div>
       <hr class="modal-hr">
-      <div class="modal-about">WebSSH Editor &mdash; prototype<br>Browser-based SSH editor &middot; zero server footprint<br><a href="https://github.com/wwlapaki310/webssh-editor" target="_blank">github.com/wwlapaki310/webssh-editor</a></div>
+      <div class="modal-about">WebSSH Editor &mdash; Phase ② bridge<br>Browser-based SSH editor &middot; zero server footprint<br><a href="https://github.com/wwlapaki310/webssh-editor" target="_blank">github.com/wwlapaki310/webssh-editor</a></div>
     </div>
   </div>
 </div>
 
-<script src="js/data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
 <script src="js/highlight.js"></script>
 <script src="js/app.js"></script>
 </body>
