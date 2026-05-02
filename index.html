@@ -17,6 +17,7 @@
 html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans',sans-serif;overflow:hidden}
 .screen{display:none}
 .screen.active{display:flex;flex-direction:column;height:100vh}
+/* connect */
 .connect-screen{align-items:center;justify-content:center;padding:24px}
 .connect-logo{text-align:center;margin-bottom:24px}
 .logo-main{font-size:24px;font-weight:500;letter-spacing:-.5px}
@@ -69,6 +70,7 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
 .btn-connect{background:var(--ac);border:none;color:#04342C;border-radius:5px;padding:7px 18px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;min-width:110px;justify-content:center}
 .btn-connect:hover:not(:disabled){background:#0F6E56;color:var(--t0)}
 .btn-connect:disabled{opacity:.7;cursor:default}
+/* ide */
 .topbar{display:flex;align-items:center;gap:12px;padding:0 14px;height:38px;background:var(--bg1);border-bottom:1px solid var(--bd2);flex-shrink:0}
 .topbar-logo{font-size:13px;font-weight:500}
 .topbar-logo span{color:var(--ac)}
@@ -93,27 +95,23 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
 .tab{display:flex;align-items:center;gap:6px;padding:0 14px;height:34px;font-size:12px;cursor:pointer;color:var(--t1);border-right:1px solid var(--bd2);white-space:nowrap;flex-shrink:0;font-family:'JetBrains Mono',monospace;transition:color .1s}
 .tab:hover{color:var(--t0)}
 .tab.active{background:var(--bg0);color:var(--t0);border-top:1px solid var(--ac)}
-.tab.modified .tab-name::before{content:'● ';color:var(--ac);font-size:10px}
+.tab .dot{width:8px;height:8px;border-radius:50%;background:var(--ac);display:none;flex-shrink:0}
+.tab.modified .dot{display:inline-block}
 .tab .x{font-size:14px;color:transparent;width:16px;text-align:center;transition:color .1s}
 .tab:hover .x,.tab.active .x{color:var(--t2)}
 .tab .x:hover{color:var(--t0)!important}
-.tabs-actions{margin-left:auto;display:flex;align-items:center;padding:0 8px;gap:4px;flex-shrink:0}
-.act-btn{background:none;border:1px solid var(--bd);color:var(--t1);font-size:11px;font-family:'DM Sans',sans-serif;padding:3px 10px;border-radius:4px;cursor:pointer;transition:all .1s;white-space:nowrap}
-.act-btn:hover{background:var(--bg2);color:var(--t0)}
-.act-btn.save{background:var(--ac);border-color:var(--ac);color:#04342C;font-weight:500}
-.act-btn.save:hover{background:#0F6E56;color:var(--t0)}
-.editor-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.editor-scroll{flex:1;overflow:auto;padding:14px 0}
-.editor-scroll::-webkit-scrollbar{width:8px;height:8px}
-.editor-scroll::-webkit-scrollbar-thumb{background:var(--bg2);border-radius:4px}
-.code-line{display:flex;min-height:21px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65}
-.code-line:hover{background:rgba(255,255,255,.02)}
-.ln{width:48px;text-align:right;color:var(--t2);padding-right:16px;font-size:12px;flex-shrink:0;user-select:none}
-.ln.hide{opacity:0}
-.code-line:hover .ln{color:var(--t1)}
-.code-cnt{flex:1;padding-right:24px;white-space:pre}
-.kw{color:#ff7b72}.str{color:#a5d6ff}.cm{color:#8b949e;font-style:italic}.num{color:#79c0ff}.bi{color:#79c0ff}.dec{color:#ffa657}
-.editor-ta{display:none;flex:1;background:var(--bg0);border:none;outline:none;color:var(--t0);font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;padding:14px 16px 14px 64px;resize:none;caret-color:var(--ac);tab-size:4}
+/* editor: gutter + code area */
+.editor-wrap{flex:1;display:flex;overflow:hidden;background:var(--bg0);cursor:text}
+.gutter{width:48px;flex-shrink:0;overflow:hidden;background:var(--bg0);padding-top:0}
+.gutter-nums{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.65;color:var(--t2);text-align:right;padding:14px 12px 14px 0;white-space:pre;pointer-events:none;transition:color .1s}
+.editor-wrap:focus-within .gutter-nums{color:var(--t1)}
+.code-scroll{flex:1;position:relative;overflow:auto}
+.code-scroll::-webkit-scrollbar{width:8px;height:8px}
+.code-scroll::-webkit-scrollbar-thumb{background:var(--bg2);border-radius:4px}
+.hl-pre{position:relative;padding:14px 24px 14px 16px;margin:0;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre;pointer-events:none;color:var(--t0);word-break:normal;min-height:100%}
+.editor-ta{position:absolute;top:0;left:0;width:100%;height:100%;padding:14px 24px 14px 16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;background:transparent;color:transparent;caret-color:#c9d1d9;border:none;outline:none;resize:none;tab-size:4;white-space:pre;overflow:hidden;spellcheck:false}
+.editor-ta::selection{background:rgba(56,139,253,.25)}
+/* terminal */
 .term-pane{height:170px;flex-shrink:0;background:var(--bg0);border-top:1px solid var(--bd2);display:flex;flex-direction:column}
 .term-tabs{display:flex;align-items:center;background:var(--bg1);border-bottom:1px solid var(--bd2);padding:0 12px;height:30px;gap:10px}
 .term-tab{font-size:11px;color:var(--t1);cursor:pointer;padding:2px 8px;border-radius:3px}
@@ -128,11 +126,14 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
 .t-err{color:#ff7b72}
 .t-input-row{display:flex;align-items:center}
 .t-input{background:none;border:none;outline:none;color:var(--t0);font-family:'JetBrains Mono',monospace;font-size:12px;flex:1;caret-color:var(--ac)}
+/* statusbar */
 .statusbar{display:flex;align-items:center;height:22px;flex-shrink:0;background:#0a3d26;font-size:11px;font-family:'JetBrains Mono',monospace}
 .sb-item{padding:0 10px;height:100%;display:flex;align-items:center;gap:4px;color:var(--ac-t);border-right:1px solid rgba(29,158,117,.3)}
 .sb-item.accent{background:var(--ac);color:#04342C;font-weight:500}
-.sb-item.editing-badge{background:#e3b341;color:#2c1a00;font-weight:500}
 .sb-r{margin-left:auto;display:flex}
+.sb-saved{color:var(--ac);opacity:0;transition:opacity .3s}
+.sb-saved.show{opacity:1}
+/* settings modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
 .modal{background:var(--bg1);border:1px solid var(--bd);border-radius:10px;width:340px;overflow:hidden;animation:fadeUp .15s ease}
@@ -157,6 +158,7 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
 </head>
 <body>
 
+<!-- CONNECT -->
 <div id="screen-connect" class="screen connect-screen active">
   <div class="connect-logo">
     <div class="logo-main">WebSSH <span>Editor</span></div>
@@ -174,9 +176,7 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
           <div class="saved-name">example-server</div>
           <div class="saved-host">your-server.example.com</div>
         </div>
-        <div class="pane-add">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> New
-        </div>
+        <div class="pane-add"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> New</div>
       </div>
       <div class="form-pane">
         <div class="field-2">
@@ -190,15 +190,9 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
           <button class="auth-opt on" id="opt-pw" onclick="setAuth('pw')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2" y="5" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M4 5V3.5a2 2 0 014 0V5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> Password</button>
           <button class="auth-opt" id="opt-agent" onclick="setAuth('agent')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.1"/><path d="M1.5 11c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> Agent</button>
         </div>
-        <div id="pane-pw" class="auth-pane on">
-          <div class="field"><label class="lbl">Password</label><div class="pw-wrap"><input id="f-pw" class="inp" type="password" placeholder="••••••••" style="padding-right:52px"><button class="pw-eye" onclick="togglePw()">show</button></div></div>
-        </div>
-        <div id="pane-key" class="auth-pane">
-          <div class="field"><label class="lbl">Private key</label><textarea class="key-ta" placeholder="Paste private key (-----BEGIN OPENSSH PRIVATE KEY-----)&#10;or browse for a file below"></textarea><div class="key-hint" style="margin-top:5px"><a>Browse key file</a> &nbsp;·&nbsp; Passphrase: <input type="password" class="inp" placeholder="optional" style="display:inline;width:110px;padding:2px 8px;font-size:11px;height:26px"></div></div>
-        </div>
-        <div id="pane-agent" class="auth-pane">
-          <div class="agent-note"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#1D9E75" stroke-width="1.1"/><path d="M7 4.5v3l1.5 1.5" stroke="#1D9E75" stroke-width="1.1" stroke-linecap="round"/></svg> SSH Agent detected — using forwarded keys</div>
-        </div>
+        <div id="pane-pw" class="auth-pane on"><div class="field"><label class="lbl">Password</label><div class="pw-wrap"><input id="f-pw" class="inp" type="password" placeholder="••••••••" style="padding-right:52px"><button class="pw-eye" onclick="togglePw()">show</button></div></div></div>
+        <div id="pane-key" class="auth-pane"><div class="field"><label class="lbl">Private key</label><textarea class="key-ta" placeholder="Paste private key (-----BEGIN OPENSSH PRIVATE KEY-----)&#10;or browse for a file below"></textarea><div class="key-hint" style="margin-top:5px"><a>Browse key file</a> &nbsp;·&nbsp; Passphrase: <input type="password" class="inp" placeholder="optional" style="display:inline;width:110px;padding:2px 8px;font-size:11px;height:26px"></div></div></div>
+        <div id="pane-agent" class="auth-pane"><div class="agent-note"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#1D9E75" stroke-width="1.1"/><path d="M7 4.5v3l1.5 1.5" stroke="#1D9E75" stroke-width="1.1" stroke-linecap="round"/></svg> SSH Agent detected — using forwarded keys</div></div>
       </div>
     </div>
     <div class="dialog-ftr">
@@ -211,6 +205,7 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
   </div>
 </div>
 
+<!-- IDE -->
 <div id="screen-ide" class="screen">
   <div class="topbar">
     <div class="topbar-logo">WebSSH <span>Editor</span></div>
@@ -240,16 +235,23 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
     </div>
     <div class="editor-area">
       <div class="tabs-bar" id="tabs-bar">
-        <div class="tab active" data-file="main.py" onclick="switchTab('main.py')"><span class="tab-name">main.py</span><span class="x" onclick="closeTab(event,'main.py')">×</span></div>
-        <div class="tabs-actions">
-          <button class="act-btn" id="btn-edit" onclick="enterEditMode()">Edit</button>
-          <button class="act-btn save" id="btn-save" style="display:none" onclick="saveFile()">Save</button>
-          <button class="act-btn" id="btn-discard" style="display:none" onclick="discardEdit()">Discard</button>
+        <div class="tab active" data-file="main.py" onclick="switchTab('main.py')">
+          <span class="dot"></span><span class="tab-name">main.py</span><span class="x" onclick="closeTab(event,'main.py')">×</span>
         </div>
       </div>
-      <div class="editor-wrap">
-        <div class="editor-scroll" id="editor"></div>
-        <textarea class="editor-ta" id="editor-ta" spellcheck="false" onkeydown="editKeyDown(event)"></textarea>
+      <!-- always-editable editor: gutter + hl-pre + transparent textarea -->
+      <div class="editor-wrap" onclick="focusEditor()">
+        <div class="gutter"><div class="gutter-nums" id="gutter-nums">1</div></div>
+        <div class="code-scroll" id="code-scroll">
+          <pre class="hl-pre" id="hl-pre"></pre>
+          <textarea class="editor-ta" id="editor-ta" spellcheck="false"
+            oninput="onEditorInput()"
+            onkeydown="onEditorKeyDown(event)"
+            onkeyup="updateCursor()"
+            onclick="updateCursor()"
+            onscroll="syncGutter()"
+          ></textarea>
+        </div>
       </div>
       <div class="term-pane">
         <div class="term-tabs">
@@ -271,14 +273,15 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
   <div class="statusbar">
     <div class="sb-item accent">⎇ main</div>
     <div class="sb-item">SSH Connected</div>
-    <div class="sb-item editing-badge" id="sb-editing" style="display:none">EDITING</div>
     <div class="sb-r">
+      <div class="sb-item"><span class="sb-saved" id="sb-saved">Saved ✓</span></div>
       <div class="sb-item" id="sb-cur">Ln 1, Col 1</div>
       <div class="sb-item">SFTP ✓</div>
     </div>
   </div>
 </div>
 
+<!-- SETTINGS -->
 <div class="modal-overlay" id="settings-modal" onclick="closeSettingsOutside(event)">
   <div class="modal">
     <div class="modal-hdr"><span>Settings</span><button class="modal-x" onclick="closeSettings()">×</button></div>
@@ -294,7 +297,7 @@ html,body{height:100%;background:var(--bg0);color:var(--t0);font-family:'DM Sans
       </div>
       <div class="set-row">
         <div class="set-label">Line numbers</div>
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;"><input type="checkbox" id="toggle-ln" checked onchange="toggleLineNumbers(this.checked)" style="accent-color:var(--ac);width:13px;height:13px;cursor:pointer"> Show</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" id="toggle-ln" checked onchange="toggleLineNumbers(this.checked)" style="accent-color:var(--ac);width:13px;height:13px;cursor:pointer"> Show</label>
       </div>
       <hr class="modal-hr">
       <div class="modal-about">WebSSH Editor — prototype<br>Browser-based SSH editor · zero server footprint<br><a href="https://github.com/wwlapaki310/webssh-editor" target="_blank">github.com/wwlapaki310/webssh-editor</a></div>
@@ -368,7 +371,7 @@ class IMX500Model:
         print(f'[INFO] Loading: {self.model_path}')
 
     def _load_labels(self) -> List[str]:
-        return ['person','bicycle','car','cat','dog']
+        return ['person', 'bicycle', 'car', 'cat', 'dog']
 
     def infer(self, frame: np.ndarray) -> List[Detection]:
         tensor = self.preprocess(frame)
@@ -435,37 +438,132 @@ Real-time object detection on Raspberry Pi using Sony IMX500.
 `
 };
 
+// saved versions (tracks what's been Ctrl+S'd)
+const savedFiles={};
+Object.keys(FILES).forEach(k=>savedFiles[k]=FILES[k]);
+
+// ---- syntax highlighting ----
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function findComment(line){let inStr=false,ch='';for(let i=0;i<line.length;i++){const c=line[i];if(!inStr&&(c=='"'||c=="'")){inStr=true;ch=c;}else if(inStr&&c==ch&&line[i-1]!='\\'){inStr=false;}else if(!inStr&&c=='#')return i;}return -1;}
+function findComment(line){let q=false,ch='';for(let i=0;i<line.length;i++){const c=line[i];if(!q&&(c=='"'||c=="'")){q=true;ch=c;}else if(q&&c==ch&&line[i-1]!='\\'){q=false;}else if(!q&&c=='#')return i;}return -1;}
 function hlCode(s){
   const KW=/\b(import|from|def|class|if|elif|else|return|while|for|in|as|with|try|except|pass|True|False|None|and|or|not|is|lambda|raise|yield|break|continue|global|del|assert|async|await)\b/g;
   const BI=/\b(print|len|range|str|int|float|list|dict|set|tuple|bool|type|isinstance|open|zip|sorted|enumerate|sum|min|max|abs|round|super|staticmethod|classmethod)\b/g;
-  s=s.replace(/("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,'<span class="str">$1</span>');
-  s=s.replace(/(@\w+)/g,'<span class="dec">$1</span>');
-  s=s.replace(KW,'<span class="kw">$1</span>');
-  s=s.replace(BI,'<span class="bi">$1</span>');
-  s=s.replace(/\b(\d+\.?\d*)\b/g,'<span class="num">$1</span>');
+  s=s.replace(/("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,'<span style="color:#a5d6ff">$1</span>');
+  s=s.replace(/(@\w+)/g,'<span style="color:#ffa657">$1</span>');
+  s=s.replace(KW,'<span style="color:#ff7b72">$1</span>');
+  s=s.replace(BI,'<span style="color:#79c0ff">$1</span>');
+  s=s.replace(/\b(\d+\.?\d*)\b/g,'<span style="color:#79c0ff">$1</span>');
   return s;
 }
 function hlPython(code){
   return code.split('\n').map(line=>{
     const ci=findComment(line);
     const cp=ci>=0?line.slice(0,ci):line,cm=ci>=0?line.slice(ci):'';
-    return hlCode(esc(cp))+(cm?`<span class="cm">${esc(cm)}</span>`:'');
-  });
+    return hlCode(esc(cp))+(cm?`<span style="color:#8b949e;font-style:italic">${esc(cm)}</span>`:'');
+  }).join('\n');
+}
+function highlight(name,content){
+  if(name.endsWith('.py'))return hlPython(content);
+  return esc(content);
 }
 
-let showLn=true,fontSize=12.5;
-function renderFile(name){
-  const c=FILES[name]||'';
-  const lines=name.endsWith('.py')?hlPython(c):c.split('\n').map(esc);
-  document.getElementById('editor').innerHTML=lines.map((l,i)=>
-    `<div class="code-line"><span class="ln${showLn?'':' hide'}">${i+1}</span><span class="code-cnt">${l||' '}</span></div>`
-  ).join('');
+// ---- state ----
+let currentFile='main.py';
+let openTabs=['main.py'];
+let termCwd='~/project';
+let connUser='username';
+let showLn=true;
+let fontSize=12.5;
+let savedTimeout=null;
+
+// ---- editor core ----
+function loadFile(name){
+  const ta=document.getElementById('editor-ta');
+  const content=FILES[name]||'';
+  ta.value=content;
+  updateHl(name,content);
+  updateGutter(content);
+  resizeTa();
+  updateCursor();
 }
 
-let currentFile='main.py',openTabs=['main.py'],termCwd='~/project',connUser='username',isEditing=false,editOriginal='';
+function updateHl(name,content){
+  document.getElementById('hl-pre').innerHTML=highlight(name,content);
+}
 
+function updateGutter(content){
+  if(!showLn){document.getElementById('gutter-nums').textContent='';return;}
+  const lines=content.split('\n').length;
+  document.getElementById('gutter-nums').textContent=Array.from({length:lines},(_,i)=>i+1).join('\n');
+}
+
+function resizeTa(){
+  const ta=document.getElementById('editor-ta');
+  const pre=document.getElementById('hl-pre');
+  // match textarea height to pre so parent scrolls correctly
+  ta.style.height=Math.max(pre.scrollHeight,document.getElementById('code-scroll').clientHeight)+'px';
+}
+
+function syncGutter(){
+  // sync gutter scroll with code-scroll
+  const cs=document.getElementById('code-scroll');
+  document.getElementById('gutter-nums').style.marginTop=(-cs.scrollTop+14)+'px';
+  document.getElementById('gutter-nums').style.paddingTop='0';
+}
+
+function onEditorInput(){
+  const ta=document.getElementById('editor-ta');
+  const content=ta.value;
+  FILES[currentFile]=content;
+  updateHl(currentFile,content);
+  updateGutter(content);
+  resizeTa();
+  updateCursor();
+  // modified dot
+  const modified=content!==savedFiles[currentFile];
+  const tab=document.querySelector(`.tab[data-file="${currentFile}"]`);
+  if(tab)tab.classList.toggle('modified',modified);
+}
+
+function updateCursor(){
+  const ta=document.getElementById('editor-ta');
+  const text=ta.value.substring(0,ta.selectionStart);
+  const lines=text.split('\n');
+  document.getElementById('sb-cur').textContent=`Ln ${lines.length}, Col ${lines[lines.length-1].length+1}`;
+}
+
+function focusEditor(){
+  document.getElementById('editor-ta').focus();
+}
+
+function onEditorKeyDown(ev){
+  if(ev.key==='s'&&(ev.ctrlKey||ev.metaKey)){
+    ev.preventDefault();
+    saveCurrentFile();
+    return;
+  }
+  if(ev.key==='Tab'){
+    ev.preventDefault();
+    const ta=ev.target,s=ta.selectionStart,e=ta.selectionEnd;
+    ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(e);
+    ta.selectionStart=ta.selectionEnd=s+4;
+    onEditorInput();
+  }
+}
+
+function saveCurrentFile(){
+  const content=FILES[currentFile];
+  savedFiles[currentFile]=content;
+  const tab=document.querySelector(`.tab[data-file="${currentFile}"]`);
+  if(tab)tab.classList.remove('modified');
+  // flash "Saved"
+  const sb=document.getElementById('sb-saved');
+  sb.classList.add('show');
+  clearTimeout(savedTimeout);
+  savedTimeout=setTimeout(()=>sb.classList.remove('show'),1800);
+}
+
+// ---- connect ----
 document.querySelectorAll('.saved-item').forEach(item=>{
   item.addEventListener('click',()=>{
     document.querySelectorAll('.saved-item').forEach(i=>i.classList.remove('sel'));
@@ -475,7 +573,6 @@ document.querySelectorAll('.saved-item').forEach(item=>{
     document.getElementById('f-port').value=item.dataset.port||'22';
   });
 });
-
 function setAuth(t){['key','pw','agent'].forEach(x=>{document.getElementById('opt-'+x).classList.toggle('on',x===t);document.getElementById('pane-'+x).classList.toggle('on',x===t);});}
 function togglePw(){const f=document.getElementById('f-pw'),b=document.querySelector('.pw-eye');f.type=f.type==='password'?'text':'password';b.textContent=f.type==='password'?'show':'hide';}
 
@@ -496,121 +593,81 @@ function doConnect(){
       const sh=host.replace(/\..+/,'')||'example-server';
       document.getElementById('t-prompt-span').textContent=`${user}@${sh}:${termCwd}$ `;
       document.getElementById('term-host').textContent=`${user}@${sh}`;
-      renderFile(currentFile);
+      loadFile(currentFile);
+      setTimeout(()=>document.getElementById('editor-ta').focus(),100);
       btn.disabled=false;
       btn.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 3l3.5 3.5L7.5 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> Connect';
     },400);
   },1200);
 }
 
-function goDialog(){if(isEditing)discardEdit();document.getElementById('screen-ide').classList.remove('active');document.getElementById('screen-connect').classList.add('active');}
+function goDialog(){document.getElementById('screen-ide').classList.remove('active');document.getElementById('screen-connect').classList.add('active');}
 function toggleDir(el){const a=el.querySelector('.tree-arrow'),o=a.textContent.includes('▾');a.textContent=o?'▸':'▾';a.style.color=o?'var(--t2)':'var(--t1)';const ch=document.getElementById('dir-'+el.dataset.dir);if(ch)ch.classList.toggle('open',!o);}
 
 function openFile(name,el){
-  if(isEditing)discardEdit();
   document.querySelectorAll('.tree-node[data-file]').forEach(n=>n.classList.remove('active'));
   if(el)el.classList.add('active');
   if(!openTabs.includes(name)){
     openTabs.push(name);
     const t=document.createElement('div');
     t.className='tab';t.dataset.file=name;
-    t.innerHTML=`<span class="tab-name">${name}</span><span class="x" onclick="closeTab(event,'${name}')">×</span>`;
+    t.innerHTML=`<span class="dot"></span><span class="tab-name">${name}</span><span class="x" onclick="closeTab(event,'${name}')">×</span>`;
     t.onclick=()=>switchTab(name);
-    document.getElementById('tabs-bar').insertBefore(t,document.querySelector('.tabs-actions'));
+    document.getElementById('tabs-bar').appendChild(t);
   }
   switchTab(name);
 }
 
 function switchTab(name){
-  if(isEditing&&name!==currentFile)discardEdit();
   currentFile=name;
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.file===name));
   document.querySelectorAll('.tree-node[data-file]').forEach(n=>n.classList.toggle('active',n.dataset.file===name));
-  renderFile(name);
+  loadFile(name);
+  document.getElementById('editor-ta').focus();
 }
 
 function closeTab(ev,name){
   ev.stopPropagation();
-  if(isEditing&&currentFile===name)discardEdit();
   openTabs=openTabs.filter(t=>t!==name);
   const t=document.querySelector(`.tab[data-file="${name}"]`);
   if(t)t.remove();
-  if(currentFile===name){if(openTabs.length>0)switchTab(openTabs[openTabs.length-1]);else document.getElementById('editor').innerHTML='';}
+  if(currentFile===name){
+    if(openTabs.length>0)switchTab(openTabs[openTabs.length-1]);
+    else{document.getElementById('hl-pre').innerHTML='';document.getElementById('editor-ta').value='';}
+  }
 }
 
-function enterEditMode(){
-  if(isEditing)return;
-  isEditing=true;
-  const ta=document.getElementById('editor-ta'),sc=document.getElementById('editor');
-  editOriginal=FILES[currentFile]||'';
-  ta.value=editOriginal;ta.style.fontSize=fontSize+'px';
-  sc.style.display='none';ta.style.display='block';ta.focus();
-  document.getElementById('btn-edit').style.display='none';
-  document.getElementById('btn-save').style.display='';
-  document.getElementById('btn-discard').style.display='';
-  document.getElementById('sb-editing').style.display='';
-  ta.addEventListener('input',onEditInput);
-}
-function onEditInput(){
-  const mod=document.getElementById('editor-ta').value!==editOriginal;
-  const tab=document.querySelector(`.tab[data-file="${currentFile}"]`);
-  if(tab)tab.classList.toggle('modified',mod);
-}
-function saveFile(){
-  const ta=document.getElementById('editor-ta');
-  FILES[currentFile]=ta.value;editOriginal=ta.value;
-  const tab=document.querySelector(`.tab[data-file="${currentFile}"]`);
-  if(tab)tab.classList.remove('modified');
-  exitEditMode();renderFile(currentFile);
-}
-function discardEdit(){
-  const tab=document.querySelector(`.tab[data-file="${currentFile}"]`);
-  if(tab)tab.classList.remove('modified');
-  exitEditMode();renderFile(currentFile);
-}
-function exitEditMode(){
-  isEditing=false;
-  const ta=document.getElementById('editor-ta'),sc=document.getElementById('editor');
-  ta.style.display='none';sc.style.display='block';
-  document.getElementById('btn-edit').style.display='';
-  document.getElementById('btn-save').style.display='none';
-  document.getElementById('btn-discard').style.display='none';
-  document.getElementById('sb-editing').style.display='none';
-  ta.removeEventListener('input',onEditInput);
-}
-function editKeyDown(ev){
-  if(ev.key==='s'&&(ev.ctrlKey||ev.metaKey)){ev.preventDefault();saveFile();}
-  if(ev.key==='Escape')discardEdit();
-  if(ev.key==='Tab'){ev.preventDefault();const ta=ev.target,s=ta.selectionStart;ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(ta.selectionEnd);ta.selectionStart=ta.selectionEnd=s+4;}
-}
-
+// ---- settings ----
 function openSettings(){document.getElementById('settings-modal').classList.add('open');}
 function closeSettings(){document.getElementById('settings-modal').classList.remove('open');}
 function closeSettingsOutside(ev){if(ev.target===document.getElementById('settings-modal'))closeSettings();}
 function setFontSize(size){
   fontSize=size;
   document.querySelectorAll('.seg-b').forEach(b=>b.classList.toggle('on',+b.dataset.size===size));
-  document.getElementById('editor').style.fontSize=size+'px';
-  document.getElementById('editor-ta').style.fontSize=size+'px';
+  const px=size+'px';
+  document.getElementById('hl-pre').style.fontSize=px;
+  document.getElementById('editor-ta').style.fontSize=px;
+  document.getElementById('gutter-nums').style.fontSize=(size-0.5)+'px';
+  resizeTa();
 }
 function toggleLineNumbers(show){
   showLn=show;
-  document.querySelectorAll('.ln').forEach(el=>el.classList.toggle('hide',!show));
+  document.getElementById('gutter-nums').style.visibility=show?'visible':'hidden';
+  updateGutter(FILES[currentFile]||'');
 }
 
+// ---- terminal ----
+function esc2(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 const TERM_RESP={
   'ls':'config.py  main.py  model.py  requirements.txt  README.md  tests/',
-  'ls -la':`total 28\ndrwxr-xr-x 4 user user 4096 May  1 12:00 .\n-rw-r--r-- 1 user user  842 May  1 12:00 README.md\n-rw-r--r-- 1 user user  156 May  1 12:00 requirements.txt\ndrwxr-xr-x 2 user user 4096 May  1 12:00 src\ndrwxr-xr-x 2 user user 4096 May  1 12:00 tests`,
-  'pwd':'/home/user/project',
-  'whoami':'user',
+  'ls -la':`total 28\ndrwxr-xr-x 4 user user 4096 May  1 12:00 .\n-rw-r--r-- 1 user user  842 May  1 12:00 README.md\ndrwxr-xr-x 2 user user 4096 May  1 12:00 src\ndrwxr-xr-x 2 user user 4096 May  1 12:00 tests`,
+  'pwd':'/home/user/project','whoami':'user',
   'uname -a':'Linux example-server 6.1.0 #1 SMP aarch64 GNU/Linux',
   'free -h':'               total   used   free\nMem:           3.7Gi  612Mi  2.8Gi',
   'df -h':'/dev/root  29G  8.2G  19G  30% /',
-  'git status':`On branch main\nnothing to commit, working tree clean`,
+  'git status':'On branch main\nnothing to commit, working tree clean',
   'git log --oneline -5':'a1b2c3d feat: add config\ne4f5a6b feat: implement model\n7c8d9e0 init: project structure',
-  'pip list':'Package              Version\n-------------------- -------\nnumpy                1.24.3\nopencv-python        4.8.0\npicamera2            0.3.12',
 };
-
 function termKey(ev){
   if(ev.key!=='Enter')return;
   const input=document.getElementById('t-input');
@@ -618,7 +675,7 @@ function termKey(ev){
   const body=document.getElementById('term-body'),row=document.getElementById('t-input-row');
   const pt=document.getElementById('t-prompt-span').textContent;
   const cmdEl=document.createElement('div');cmdEl.className='t-line';
-  cmdEl.innerHTML=`<span class="t-prompt">${pt}</span> ${esc(cmd)}`;
+  cmdEl.innerHTML=`<span class="t-prompt">${pt}</span> ${esc2(cmd)}`;
   body.insertBefore(cmdEl,row);
   if(!cmd){body.scrollTop=body.scrollHeight;return;}
   if(cmd==='clear'){Array.from(body.children).forEach(c=>{if(c!==row)c.remove();});return;}
@@ -638,14 +695,18 @@ function termKey(ev){
   }else if(cmd.startsWith('cat ')){
     const f=cmd.slice(4);
     if(FILES[f]){res.textContent=FILES[f];res.style.whiteSpace='pre';}
-    else res.innerHTML=`<span class="t-err">cat: ${esc(f)}: No such file or directory</span>`;
+    else res.innerHTML=`<span class="t-err">cat: ${esc2(f)}: No such file or directory</span>`;
   }else{
-    res.innerHTML=`<span class="t-err">bash: ${esc(cmd)}: command not found</span>`;
+    res.innerHTML=`<span class="t-err">bash: ${esc2(cmd)}: command not found</span>`;
   }
   body.insertBefore(res,row);body.scrollTop=body.scrollHeight;
 }
 
-renderFile('main.py');
+// ---- init ----
+// pre-load so it renders correctly when IDE opens
+document.getElementById('editor-ta').value=FILES['main.py'];
+updateHl('main.py',FILES['main.py']);
+updateGutter(FILES['main.py']);
 </script>
 </body>
 </html>
