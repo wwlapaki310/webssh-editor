@@ -71,6 +71,66 @@ RAM on remote: ~5 MB (sshd only)   CPU: near zero
 
 ---
 
+## Repository Structure
+
+```
+webssh-editor/
+├── index.html          HTML structure only (screens, dialogs, IDE layout)
+├── style.css           All styles (connect dialog, IDE, editor, terminal, modals)
+├── .nojekyll           GitHub Pages: bypass Jekyll processing
+└── js/
+    ├── data.js         Sample file contents (replaces SFTP fetch in production)
+    ├── highlight.js    Syntax highlighting (Python tokenizer; swap for Monaco later)
+    └── app.js          All interaction logic:
+                          - Editor core (textarea + hl-pre overlay, gutter, Ctrl+S)
+                          - Tab management & file tree
+                          - Connect dialog & auth modes
+                          - Terminal emulator
+                          - Settings modal (font size, line numbers)
+```
+
+---
+
+## Implementation Status
+
+Three major implementation phases, in order of dependency:
+
+### ① Editor UI  ⬅ current phase
+The browser-side editing experience. Currently implemented as a UI prototype:
+
+| Feature | Status | Note |
+|---|---|---|
+| Connect dialog (UI) | ✅ Done | SSH Key / Password / Agent modes |
+| File tree + tabs | ✅ Done | Multi-file, close, switch |
+| Always-editable editor | ✅ Done | `pre` + transparent `textarea` overlay |
+| Syntax highlighting | 🟡 Prototype | Custom JS tokenizer — replace with Monaco |
+| Terminal emulator (UI) | 🟡 Prototype | Simulated responses — replace with xterm.js |
+| **Monaco Editor** | ⬜ Next | Drop-in replacement for the custom highlighter |
+| File cache (IndexedDB) | ⬜ Next | Persist edits across sessions |
+
+### ② Bridge Binary  ⬜ Not started
+A small local binary (Go recommended) that the user runs once on their machine.  
+It exposes a WebSocket server on `localhost` and proxies to SSH/SFTP on the remote.  
+**The remote host needs nothing installed** — only a running `sshd`.
+
+| Component | Plan |
+|---|---|
+| WebSocket server | `gorilla/websocket` |
+| SSH/SFTP client | `golang.org/x/crypto/ssh` |
+| Auth | password, SSH key, agent forwarding |
+| Distribution | single static binary via GitHub Releases |
+
+### ③ LSP in WASM  ⬜ Not started
+Language servers running entirely in the browser — no remote process required.
+
+| Language | Approach |
+|---|---|
+| TypeScript / JS | `tsserver` via Web Worker (native JS, easiest) |
+| Python | `pylsp` via Pyodide |
+| Rust | `rust-analyzer` WASM build (experimental) |
+
+---
+
 ## Key Design Principles
 
 | Principle | Detail |
@@ -79,7 +139,7 @@ RAM on remote: ~5 MB (sshd only)   CPU: near zero
 | **Browser-first** | Monaco Editor runs entirely in the browser via standard JS. |
 | **LSP local** | Language servers run as WASM modules or Web Workers — not on the remote. |
 | **Sync on save** | Files are read/written via SFTP on demand. Local cache in IndexedDB for offline edits. |
-| **Single binary bridge** | A small Go (or Rust) binary runs locally, proxying WebSocket to SSH/SFTP. Distributed as a single static binary. |
+| **Single binary bridge** | A small Go binary runs locally, proxying WebSocket to SSH/SFTP. Distributed as a single static binary. |
 
 ---
 
@@ -101,9 +161,9 @@ RAM on remote: ~5 MB (sshd only)   CPU: near zero
 
 | Component | Technology | Notes |
 |---|---|---|
-| Language | Go or Rust | Single static binary, no dependencies |
-| SSH/SFTP | `golang.org/x/crypto/ssh` or `libssh2` | Handles auth (password, key, agent) |
-| WebSocket server | `gorilla/websocket` or `tokio-tungstenite` | Bridges browser to SSH session |
+| Language | Go | Single static binary, no dependencies |
+| SSH/SFTP | `golang.org/x/crypto/ssh` | Handles auth (password, key, agent) |
+| WebSocket server | `gorilla/websocket` | Bridges browser to SSH session |
 | Distribution | GitHub Releases (`curl \| sh`) | One-liner install, nothing on remote |
 
 ### Remote Server
@@ -125,33 +185,6 @@ RAM on remote: ~5 MB (sshd only)   CPU: near zero
 | File tree UI | ✅ | ❌ | **✅** |
 | Terminal | ✅ | ✅ | **✅** |
 | Works on Raspberry Pi | △ (heavy) | ✅ | **✅** |
-
----
-
-## MVP Roadmap
-
-### Phase 1 — Core editing (Week 1–2)
-- [ ] Bridge binary: WebSocket server + SFTP client
-- [ ] Browser: Monaco Editor + file open/save via SFTP
-- [ ] Browser: File tree panel
-- [ ] Auth: SSH key + password support
-
-### Phase 2 — Terminal + UX (Week 3–4)
-- [ ] xterm.js terminal integration via SSH shell channel
-- [ ] Tab-based multi-file editing
-- [ ] Syntax highlighting (Monaco built-in)
-- [ ] Settings: host/port/key management (localStorage)
-
-### Phase 3 — LSP (Month 2)
-- [ ] TypeScript/JavaScript: `tsserver` via Web Worker
-- [ ] Python: `pylsp` via Pyodide
-- [ ] Rust: `rust-analyzer` WASM (experimental)
-- [ ] Go-to-definition, hover docs, diagnostics
-
-### Phase 4 — Fleet features (Future)
-- [ ] Multi-host sidebar (connect to multiple remotes)
-- [ ] Broadcast edit (push same file to N hosts)
-- [ ] Device health status (disk, memory, process)
 
 ---
 
@@ -179,7 +212,6 @@ The `.nojekyll` file is already included so GitHub Pages serves `index.html` cor
 This project is in early design/prototyping phase. Ideas, architecture feedback, and PRs are welcome.
 
 - Open an [Issue](../../issues) for feature requests or design discussions
-- See `docs/` for architecture details (coming soon)
 
 ---
 
